@@ -1,83 +1,65 @@
-import React from 'react';
+import React  from 'react';
+import Navbar from './components/layout/Navbar';
+import TodoList from './components/dashboard/TodoList';
+
 import './App.css';
 
-const ItemsList = (props) => {
-    const { items } = props;
-    console.log(items);
-
-    return(
-        <ul>
-            {
-                items && items.map( (item, i) => <li className={item.completed ? 'is-done' : ' '} key={i}>{ item.name } <button id={i} onClick={props.mark} >X</button> </li>)
-            }
-        </ul>
-    )
-}
 
 class App extends React.Component {
-
     constructor(props) {
         super(props);
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.mark = this.mark.bind(this);
         this.state = {
-            items: [],
-        }
-        this.inputItemRef = React.createRef();
-    }
-
-
-
-    handleChange(e) {
-        e.preventDefault();
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-        const { items } = this.state;
-        if(this.inputItemRef.current.value.length == 0) return false;
-        const item = {
-            name : this.inputItemRef.current.value,
-            completed: false
+            todos:
+                [
+                    {
+                        id: 1,
+                        task: 'Write React app using hooks',
+                        completed: true
+                    },
+                    {
+                        id: 2,
+                        task: 'Write backend in node express',
+                        completed: false
+                    },
+                    {
+                        id: 3,
+                        task: 'Write backend in node hapi',
+                        completed: true
+                    },
+                    {
+                        id: 4,
+                        task: 'Write backend in node GraphGL',
+                        completed: false
+                    }
+                ]
         };
-        items.push(item);
-        this.setState({items});
-        this.inputItemRef.current.value = '';
+
+        this.updateTodos = this.updateTodos.bind(this);
     }
 
-    mark(e) {
-        console.log('mark', e.target.id);
-
-
-        const { items } = this.state;
-        const item = items[e.target.id];
-
-        item.completed = ! item.completed;
-
-        items[e.target.id] = item;
-        this.setState({
-            items
-        })
-
+    updateTodos(todos) {
+        this.setState({todos});
     }
 
     render() {
         return (
             <div className="App">
-                <h1>Todo</h1>
-                <p>Remaining Tasks: {this.state.items.filter( item => item.completed === true).length}  { this.state.items.length} </p>
-                <form onSubmit={this.handleSubmit}>
-                    <input type="text" id="item" ref={this.inputItemRef} onChange={ this.handleChange } />
-                    <button>Add</button>
-                </form>
+                <Navbar/>
 
-                <ItemsList items={this.state.items} mark={this.mark}/>
+                <div className="dashboard container">
+                    <div className="row">
+                        <div className="col s12 m10 offset-m1">
+                            <TodoList updateTodos={this.updateTodos} todos={this.state.todos} />
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        );
+        )
     }
+
 }
+
 
 export default App;
 
